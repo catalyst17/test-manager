@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ccts_app'
+    'apps.ccts_app'
 ]
 
 MIDDLEWARE = [
