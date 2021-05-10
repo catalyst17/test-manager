@@ -55,8 +55,10 @@ class AssignmentEnvironment(models.Model):
 
 class Exercise(models.Model):
     title = models.CharField()
-    # todo
+    description = models.CharField(blank=True)
+    solution_canvas = models.TextField(blank=True)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    environment = models.ForeignKey(Environment, on_delete=models. CASCADE)
 
     class Meta:
         db_table = "exercise"
