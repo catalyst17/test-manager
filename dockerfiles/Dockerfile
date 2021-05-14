@@ -4,11 +4,12 @@ FROM python:3.8-slim-buster
 
 WORKDIR /app
 
-COPY ../sample_submissions/solution.py solution.py
-COPY ../sample_tests/test.py test.py
+#COPY submissions/sample_solution.py solution.py
+#COPY tests/sample_test.py test.py
 
 #RUN pip3 install -r requirements.txt
 
 #COPY . .
 
+# с этим разобраться, супер-процесс
 CMD [ "python3", "-m" , "unittest", "test.SortTests"]

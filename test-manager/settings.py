@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+f*4!(v4n3!%nn+yawzx#lq9gq+99m^5*^q$77-mg5hfbifvuc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.ccts_app'
+    'rest_framework',
+    'apps.general',
+    'apps.cts'
 ]
 
 MIDDLEWARE = [
@@ -76,10 +78,19 @@ WSGI_APPLICATION = 'test-manager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'cts_pass',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
+
+
+# Custom User model
+
+AUTH_USER_MODEL = 'general.User'
 
 
 # Password validation
