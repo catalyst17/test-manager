@@ -5,7 +5,6 @@ from django.db import models
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
-    description = models.CharField(blank=True, max_length=500)
 
     class Meta:
         db_table = "t_company"
@@ -67,7 +66,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Skill(models.Model):
     name = models.CharField(max_length=100)
-    description = models.CharField(blank=True, max_length=300)
 
     class Meta:
         db_table = "t_skill"

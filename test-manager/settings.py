@@ -111,6 +111,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Celery Configuration Options
+
+# //guest:guest@localhost:5672// может не указываться, значение по умолчанию (аналогично для rpc)
+CELERY_BROKER_URL = 'pyamqp://'
+CELERY_RESULT_BACKEND = 'rpc://'
+# лимит времени выполнения задач в секундах, при превышении которого выполняющий процесс будет принудительно остановлен
+CELERY_TASK_TIME_LIMIT = 5 * 60
+# время в секундах, по истечении которого будет сгенерировано исключение, перехватываемое кодом задачи для корректного
+# завершения прерванного выполнения; полезно для раннего обнаружения решений, потребляющих большое количество ресурсов тестирующей системы
+CELERY_TASK_SOFT_TIME_LIMIT = 3 * 60
+
+# django rest framework configuration
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

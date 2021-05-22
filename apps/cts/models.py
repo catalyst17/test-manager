@@ -7,8 +7,9 @@ from apps.general.models import Company, Skill
 class Environment(models.Model):
     repository_name = models.CharField(max_length=100)
     tag = models.CharField(default="latest", max_length=100)
+    friendly_name = models.CharField(max_length=30)
     dockerfile = models.TextField()
-    status = models.CharField(max_length=30)     # maybe enum?
+    status = models.CharField(max_length=30, default='TO_CREATE', blank=True)
 
     class Meta:
         db_table = "t_environment"
@@ -70,7 +71,7 @@ class AssessRule(models.Model):
     description = models.CharField(blank=True, max_length=300)
     cmd = models.CharField(max_length=300)
     is_crucial = models.BooleanField(default=True)
-    execution_order = models.PositiveSmallIntegerField()                                    # do I need it?
+    execution_order = models.PositiveSmallIntegerField()
     assignment_environment = models.ForeignKey(AssignmentEnvironment, null=True, blank=True, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, null=True, blank=True, on_delete=models.CASCADE)
     testing_code = models.ForeignKey(TestingCode, null=True, blank=True, on_delete=models.CASCADE)
@@ -83,11 +84,12 @@ class AssessRule(models.Model):
 
 
 class Submission(models.Model):
-    source_code = models.TextField()      # FileField?
+    source_code = models.TextField()
     status = models.CharField(max_length=30)
     stdout = models.TextField(blank=True)
     stderr = models.TextField(blank=True)
     date_time = models.DateTimeField(default=datetime.now, blank=True)
+    total_time_spent = models.PositiveSmallIntegerField(null=True, blank=True)
     time_used = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
     memory_used = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
     assignment_environment = models.ForeignKey(AssignmentEnvironment, null=True, blank=True, on_delete=models.CASCADE)

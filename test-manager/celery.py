@@ -1,21 +1,18 @@
+# test-manager/celery.py
+
 import os
 
 from celery import Celery
 
-# set the default Django settings module for the 'celery' program.
+# устанавливает модуль настроек проекта Django для приложений Celery, используемый по умолчанию
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'test-manager.settings')
 
-app = Celery('test-manager',
-             backend='rpc://',
-             broker='pyamqp://')
+app = Celery('test-manager')
 
-# Using a string here means the worker doesn't have to serialize
-# the configuration object to child processes.
-# - namespace='CELERY' means all celery-related configuration keys
-#   should have a `CELERY_` prefix.
+# позволяет конфигурировать Celery в файле конфигураций Django-проекта
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# Load task modules from all registered Django app configs.
+# делает задачи, описанные в других модулях, доступными для данного экземпляра Celery приложения
 app.autodiscover_tasks()
 
 
