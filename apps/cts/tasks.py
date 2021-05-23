@@ -15,14 +15,14 @@ def check_submission(submission_id):
     submission = retrieve_submission_from_db(submission_id)
 
     # определить, решением чего является: тестового задания или внутреннего упражнения
-    if (submission.assignment_environment is None) and (submission.assignment_environment is None):
+    if (submission.assignment_environment is None) and (submission.exercise is None):
         return 'Error: submission is not bound to any assignment or exercise'
-    elif (submission.assignment_environment is not None) and (submission.assignment_environment is not None):
+    elif (submission.assignment_environment is not None) and (submission.exercise is not None):
         return 'Error: submission can not be bound both to assignment and exercise'
     elif submission.assignment_environment is not None:
         environment = submission.assignment_environment.environment
         assess_rules = submission.assignment_environment.assessrule_set.all()
-    elif submission.assignment_environment is not None:
+    elif submission.exercise is not None:
         environment = submission.exercise.environment
         assess_rules = submission.exercise.assessrule_set.all()
 
@@ -63,6 +63,7 @@ def create_image_if_not_exists(environment):
         dockerfile.write(environment.dockerfile)
         dockerfile.close()
 
+        # генерация образа с помощью заданного Dockerfile
         docker_client.images.build(path=os.getcwd() + '/dockerfiles',
                                               dockerfile=os.getcwd() + '/dockerfiles/environment_'
                                                          + str(environment.id) + '.Dockerfile',
@@ -72,18 +73,15 @@ def create_image_if_not_exists(environment):
         os.remove(os.getcwd() + '/dockerfiles/environment_' + str(environment.id) + '.Dockerfile')
         environment.status = 'CREATED'
         environment.save()
-
-    docker_client.images.get(environment.repository_name + ":" + environment.tag)
+    else:
+        docker_client.images.get(environment.repository_name + ":" + environment.tag)
 
 
 def populate_container(container, submission, assess_rules):
-    testing_codes = []
-
     # генерация файлов с исходным кодом, получаемым из БД
     for rule in assess_rules:
         testing_code = rule.testing_code
         if testing_code:
-            testing_codes.append(testing_code)
             test_file = open("dockerfiles/tests/" + testing_code.file_name, "wt")
             test_file.write(testing_code.source_code)
             test_file.close()

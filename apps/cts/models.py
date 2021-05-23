@@ -15,13 +15,12 @@ class Environment(models.Model):
         db_table = "t_environment"
 
     def __str__(self):
-        return 'Environment %s:%s' % (self.repository_name, self.tag)
+        return '%s environment (%s:%s)' % (self.friendly_name, self.repository_name, self.tag)
 
 
 class Assignment(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    solution_canvas = models.TextField(blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     environments = models.ManyToManyField(Environment, through='AssignmentEnvironment')
 
@@ -35,6 +34,7 @@ class Assignment(models.Model):
 class AssignmentEnvironment(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     environment = models.ForeignKey(Environment,  on_delete=models.CASCADE)
+    solution_canvas = models.TextField()
 
     class Meta:
         db_table = "t_assignment_environment"
@@ -43,9 +43,9 @@ class AssignmentEnvironment(models.Model):
 class Exercise(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    solution_canvas = models.TextField(blank=True)
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    solution_canvas = models.TextField()
     environment = models.ForeignKey(Environment, on_delete=models. CASCADE)
+    skill = models.ForeignKey(Skill, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = "t_exercise"
@@ -55,15 +55,17 @@ class Exercise(models.Model):
 
 
 class TestingCode(models.Model):
+    description = models.CharField(blank=True, max_length=300)
     source_code = models.TextField()
     file_name = models.CharField(max_length=30)
-    description = models.CharField(blank=True, max_length=300)
+    is_internal = models.BooleanField()
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "t_testing_code"
 
     def __str__(self):
-        return 'Testing code for one or more assess rules'
+        return 'Testing code of company %s' % self.company.name
 
 
 class AssessRule(models.Model):
